@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحميل فيديوهات TikTok</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f7f7f7;
+        }
+        h1 {
+            color: #333;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        input {
+            width: 70%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        #result p {
+            font-size: 18px;
+            color: green;
+        }
+        #result p.error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>تحميل فيديوهات TikTok</h1>
+    <p>أدخل رابط الفيديو:</p>
+    <input type="text" id="videoUrl" placeholder="https://www.tiktok.com/..." />
+    <button id="downloadBtn">تحميل الفيديو</button>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById("downloadBtn").addEventListener("click", async () => {
+            const videoUrl = document.getElementById("videoUrl").value;
+            const resultDiv = document.getElementById("result");
+
+            if (!videoUrl) {
+                resultDiv.innerHTML = "<p class='error'>الرجاء إدخال رابط فيديو!</p>";
+                return;
+            }
+
+            try {
+                const apiURL = `https://www.tikwm.com/api/?url=${encodeURIComponent(videoUrl)}`;
+                const response = await fetch(apiURL);
+                const data = await response.json();
+
+                if (data && data.data && data.data.play) {
+                    const videoSrc = data.data.play;
+
+                    // جلب الفيديو كـ Blob
+                    const videoResponse = await fetch(videoSrc);
+                    const videoBlob = await videoResponse.blob();
+
+                    // إنشاء رابط التنزيل
+                    const videoUrl = URL.createObjectURL(videoBlob);
+                    const downloadLink = document.createElement("a");
+                    downloadLink.href = videoUrl;
+                    downloadLink.download = "tiktok_video.mp4"; // اسم الفيديو عند التنزيل
+                    downloadLink.click();
+
+                    // تنظيف الرابط المؤقت
+                    URL.revokeObjectURL(videoUrl);
+
+                    resultDiv.innerHTML = "<p>تم تحميل الفيديو بنجاح!</p>";
+                } else {
+                    resultDiv.innerHTML = "<p class='error'>حدث خطأ أثناء تحميل الفيديو!</p>";
+                }
+            } catch (error) {
+                console.error(error);
+                resultDiv.innerHTML = "<p class='error'>تعذر الاتصال بالخادم.</p>";
+            }
+        });
+    </script>
+</body>
+</html>
