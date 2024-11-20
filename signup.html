@@ -1,0 +1,75 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Clone - Sign Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+    <script>
+        function handleSignup(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const fullName = document.getElementById('full_name').value;
+            const username = document.getElementById('signup_username').value;
+            const password = document.getElementById('signup_password').value;
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            const emailExists = users.some(user => user.email === email);
+            const usernameExists = users.some(user => user.username === username);
+
+            if (emailExists) {
+                alert('This email is already associated with an account.');
+            } else if (usernameExists) {
+                alert('This username is already taken.');
+            } else if (email && fullName && username && password) {
+                // Save the new user
+                users.push({ email, fullName, username, password });
+                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem('username', username);
+                window.location.href = 'app.html';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <!-- Sign Up Interface -->
+    <div class="flex items-center justify-center min-h-screen bg-gray-100">
+        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+            <h2 class="text-2xl font-bold text-center mb-6">Sign Up</h2>
+            <form action="#" method="POST" onsubmit="handleSignup(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">Email</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" name="email" placeholder="Email" type="email">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="full_name">Full Name</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="full_name" name="full_name" placeholder="Full Name" type="text">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="signup_username">Username</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="signup_username" name="username" placeholder="Username" type="text">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="signup_password">Password</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="signup_password" name="password" placeholder="Password" type="password">
+                </div>
+                <div class="flex items-center justify-between">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">Sign Up</button>
+                </div>
+            </form>
+            <div class="text-center mt-6">
+                <p class="text-gray-700">Have an account? <a class="text-blue-500 font-bold" href="login.html">Log in</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
